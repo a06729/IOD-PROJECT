@@ -120,6 +120,44 @@ export default function Page() {
     selectedShapeRef.current=elem?.value as string;
   }
 
+  // const undoRedoFetchCanvasObjects=(objects:any)=>{
+  //   const objectsList:any[]=historyStackRef.current;
+  //   console.log(`objectsList:${JSON.stringify(objectsList)}`);
+  //   for(let i = 0; i < localStorage.length+1; i++) {  
+  //     const key = localStorage.key(i);
+  //     if(key !=null && key.startsWith('canvasObject')){
+  //       localStorage.removeItem(key);
+  //     }
+  //   }
+
+  //   for(let i=0; i< objectsList.length; i++){
+  //     const data=objectsList[i];
+  //     const key=data['objectId'];
+  //     localStorage.setItem(key,JSON.stringify(data));
+  //   }
+  // }
+
+  const undoRedoFetchCanvasObjects = (objects:any) => {
+    const objectsList = historyStackRef.current;
+    console.log(`objectsList: ${JSON.stringify(objectsList)}`);
+    
+    // 'canvasObject'로 시작하는 항목을 localStorage에서 삭제
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key != null && key.startsWith('canvasObject')) {
+        localStorage.removeItem(key);
+      }
+    }
+  
+    // 새로운 객체로 localStorage를 다시 채움
+    for (let i = 0; i < objectsList.length; i++) {
+      const data = objectsList[i];
+      const key = data['objectId'];
+      if (key) { // 키가 null이나 undefined가 아님을 확인
+        localStorage.setItem(key, JSON.stringify(data));
+      }
+    }
+  }
 
   /**
    * 오브젝트를 뒤로 돌리는 함수
@@ -141,22 +179,21 @@ export default function Page() {
       });
     }
   }
-
 /**
  * 오브젝트를 앞으로 돌리는 함수
  */
   const redo = () => {
+    console.log("앞으로 이동");
     if (currentStateIndexRef.current < historyStackRef.current.length - 1) {
       isUndoRedoRef.current = true; // 추가된 부분
       currentStateIndexRef.current += 1;
       const history = historyStackRef.current[currentStateIndexRef.current];
-      fabricRef.current?.loadFromJSON(history, () => {
+      fabricRef.current?.loadFromJSON({"objects":[history]}, () => {
         fabricRef.current?.renderAll();
         isUndoRedoRef.current = false; // 추가된 부분
       });
     }
   }
-
 
   useEffect(()=>{
     const canvas=initializeFabric({canvasRef,fabricRef});
@@ -273,22 +310,7 @@ export default function Page() {
     }
   };
 
-  const undoRedoFetchCanvasObjects=(objects:any)=>{
-    const objectsList:any[]=historyStackRef.current;
-    console.log(`objectsList:${JSON.stringify(objectsList)}`);
-    for(let i = 0; i < localStorage.length+1; i++) {  
-      const key = localStorage.key(i);
-      if(key !=null && key.startsWith('canvasObject')){
-        localStorage.removeItem(key);
-      }
-    }
 
-    for(let i=0; i< objectsList.length; i++){
-      const data=objectsList[i];
-      const key=data['objectId'];
-      localStorage.setItem(key,JSON.stringify(data));
-    }
-  }
   
   /**
    * 캔버스의 진행 정보를 저장하기 위한 함수

@@ -118,9 +118,9 @@ export const handleKeyDown = ({
   if ((e?.ctrlKey || e?.metaKey) && e.keyCode === 90) {
     undo();
   }
-
+  //ACSII 코드로 키보드 구분
   // check if the key pressed is ctrl/cmd + y (redo)
-  if ((e?.ctrlKey || e?.metaKey) && e.keyCode === 89) {
+  if ((e?.ctrlKey || e?.metaKey) && e.keyCode === 66) {
     redo();
   }
 
