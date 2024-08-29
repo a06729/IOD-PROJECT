@@ -34,7 +34,7 @@ export const initializeFabric = ({
 
   // set canvas reference to fabricRef so we can use it later anywhere outside canvas listener
   fabricRef.current = canvas;
-
+  
   return canvas;
 };
 
