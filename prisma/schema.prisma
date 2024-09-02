@@ -18,6 +18,18 @@ generator client {
 model User {
   id        Int      @id @default(autoincrement())
   name      String
+  nickname  String
   email     String   @unique
   password  String
+  platform  String
+  credits   Int
+  role      String
+  posts Post[]
+}
+
+model Post{
+  id  Int   @id @default(autoincrement())
+  postbody Json
+  author   User @relation(fields: [authorId], references: [id])
+  authorId Int 
 }
